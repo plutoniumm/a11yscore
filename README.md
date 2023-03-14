@@ -9,8 +9,16 @@ Powered by
 |IBM| Accessibility Checker|
 |Independent | Pa11y|
 
+## Setup
+```bash
+$ npm install -g lighthouse # Needs Google Chrome
+```
+
 ## Usages
 ### Google Lighthouse
+```bash
+$ lighthouse https://www.nic.in/ --output json --output-path nic.json
+```
 
 ### Deque Systems Axe
 
@@ -27,3 +35,7 @@ A2 --> B[Run Checker]
 B --> C[Convert to JSON]
 C --> D[Score]
 ```
+
+<!--
+https://www.nic.in/
+ -->

@@ -5,12 +5,14 @@ specifiers:
   axe-core: ^4.6.3
   lighthouse: ^10.0.2
   pa11y: ^6.2.3
+  papaparse: ^5.4.0
 
 dependencies:
   accessibility-checker: 3.1.46
   axe-core: 4.6.3
   lighthouse: 10.0.2
   pa11y: 6.2.3
+  papaparse: 5.4.0
 
 packages:
 
@@ -1201,6 +1203,10 @@ packages:
 
   /pako/1.0.11:
     resolution: {integrity: sha512-4hLB8Py4zZce5s4yd9XzopqwVv/yGNhV1Bl8NTmCq1763HeK2+EwVTv+leGeL13Dnh2wfbqowVPXCIO0z4taYw==}
+    dev: false
+
+  /papaparse/5.4.0:
+    resolution: {integrity: sha512-ZBQABWG09p+u8rFoJVl/GhgxZ5zy9Zh1Lu/LVc7VX5T4nljjC14/YTcpebYwqP218B9X307eBOP7Tuhoqv7v7w==}
     dev: false
 
   /parse-cache-control/1.0.1:

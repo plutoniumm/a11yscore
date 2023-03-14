@@ -3,6 +3,7 @@
     "accessibility-checker": "^3.1.46",
     "axe-core": "^4.6.3",
     "lighthouse": "^10.0.2",
-    "pa11y": "^6.2.3"
+    "pa11y": "^6.2.3",
+    "papaparse": "^5.4.0"
   }
 }
