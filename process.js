@@ -15,6 +15,8 @@ const aChecker = require( "accessibility-checker" );
 const root = path.resolve( __dirname, '.' );
 const out = path.resolve( root, 'out' );
 
+const l = ( d, e = null ) => { console.log( e || d ); return d }; // log and return (and error)
+
 function csv2json ( filepath ) {
   const file = fs.createReadStream( filepath );
   return new Promise( ( resolve, reject ) => {
@@ -25,15 +27,16 @@ function csv2json ( filepath ) {
     } )
   } )
 }
-const data = csv2json( "./list.csv" ).then( data => {
-  data = data.map( e => {
+const data = csv2json( "./list.csv" ).then( d => {
+  d = d.map( e => {
     const url = cleanURL( e.href );
     return {
       ...e, url,
       key: url2key( url )
     }
-  } )
-  console.log( data );
+  } );
+
+  return l( d )
 } );
 
 //
@@ -67,29 +70,30 @@ const async_command = ( command ) => new Promise( ( resolve, reject ) => {
 // https://www.npmjs.com/package/lighthouse
 const getLighthouse = async ( url ) => {
   const key = url2key( url );
-  // lighthouse "https://www.nic.in/" --only-categories accessibility --output json --output-path "./out/nic.in.json"
-  const command = `lighthouse "${ url }" --only-categories accessibility --output json --output-path "${ out }/${ key }.json"`;
+  // const command = `lighthouse "${ url }" --only-categories accessibility --output json --output-path "${ out }/${ key }.json"`;
+  const command = `lighthouse "${ url }" --only-categories accessibility --output json`; // default for json is stdout
 
-  return await async_command( command );
+  const exec = await async_command( command );
+  return JSON.parse( l( exec ) );
+};
+const processLighthouse = ( raw ) => {
+  // TODO: Process the raw data
 };
 
 // AXE
 // https://www.npmjs.com/package/axe-core
 axe.configure( {} );
 const getAxe = async ( url ) => {
-  const axed = axe.run()
+  const axe_raw = axe.run()
     .then( results => {
-      if ( results.violations.length ) {
-        console.log( results.violations );
-        return results.violations;
-      }
+      if ( results.violations.length ) return l( results.violations );
     } )
-    .catch( err => {
-      console.log( err );
-      return [];
-    } );
+    .catch( err => l( [], err ) );
 
-  return axed;
+  return axe_raw;
+};
+const processAxe = ( raw ) => {
+  // TODO: Process the raw data
 };
 
 // aChecker
@@ -108,19 +112,15 @@ const getAxe = async ( url ) => {
 
 // PA11Y
 // https://github.com/pa11y/pa11y
-// pa11y('https://example.com/').then((results) => {
-//     // Do something with the results
-// });
 const getP11y = async ( url ) => {
-  const p11y = await pa11y( url )
-    .then( results => {
-      console.log( results );
-    } )
-    .catch( err => {
-      console.log( err );
-      return [];
-    } );
-}
+  const pa11y_raw = pa11y( url )
+    .then( results => l( results ) )
+    .catch( err => l( [], err ) );
+  return pa11y_raw
+};
+const processPally = ( raw ) => {
+  // TODO: Process the raw data
+};
 
 // MAIN
 const main = async () => {
@@ -150,3 +150,18 @@ const pallySchema = {
   runner: 'htmlcs',
   runnerExtras: {}
 }
+// This is going to be a pain.
+const googleSchema = {
+  "aria-allowed-attr": {
+    "id": "aria-allowed-attr",
+    "title": "`[aria-*]` attributes match their roles",
+    "description": "Each ARIA `role` supports a specific subset of `aria-*` attributes. Mismatching these invalidates the `aria-*` attributes. [Learn how to match ARIA attributes to their roles](https://dequeuniversity.com/rules/axe/4.6/aria-allowed-attr).",
+    "score": 1,
+    "scoreDisplayMode": "binary",
+    "details": {
+      "type": "table",
+      "headings": [],
+      "items": []
+    }
+  },
+} // take all values lol since the key is in the id, nice.
