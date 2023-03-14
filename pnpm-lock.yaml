@@ -3,6 +3,7 @@ lockfileVersion: 5.4
 specifiers:
   accessibility-checker: ^3.1.46
   axe-core: ^4.6.3
+  fast-csv: ^4.3.6
   lighthouse: ^10.0.2
   pa11y: ^6.2.3
   papaparse: ^5.4.0
@@ -10,6 +11,7 @@ specifiers:
 dependencies:
   accessibility-checker: 3.1.46
   axe-core: 4.6.3
+  fast-csv: 4.3.6
   lighthouse: 10.0.2
   pa11y: 6.2.3
   papaparse: 5.4.0
@@ -1114,18 +1116,6 @@ packages:
       whatwg-url: 5.0.0
     dev: false
 
-  /node-fetch/2.6.9:
-    resolution: {integrity: sha512-DJm/CJkZkRjKKj4Zi4BsKVZh3ValV5IR5s7LVZnW+6YMh0W1BfNA8XSs6DLMGYlId5F3KnA70uu2qepcR08Qqg==}
-    engines: {node: 4.x || >=6.0.0}
-    peerDependencies:
-      encoding: ^0.1.0
-    peerDependenciesMeta:
-      encoding:
-        optional: true
-    dependencies:
-      whatwg-url: 5.0.0
-    dev: false
-
   /node.extend/2.0.2:
     resolution: {integrity: sha512-pDT4Dchl94/+kkgdwyS2PauDFjZG0Hk0IcHIB+LkW27HLDtdoeMxHTxZh39DYbPP8UflWXWj9JcdDozF+YDOpQ==}
     engines: {node: '>=0.4.0'}
@@ -1329,7 +1319,7 @@ packages:
       devtools-protocol: 0.0.869402
       extract-zip: 2.0.1
       https-proxy-agent: 5.0.1
-      node-fetch: 2.6.9
+      node-fetch: 2.6.7
       pkg-dir: 4.2.0
       progress: 2.0.3
       proxy-from-env: 1.1.0
