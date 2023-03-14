@@ -1,3 +1,7 @@
+/*
+Don't worry there will be a main()
+meanwhile here is some long setup
+*/
 const {
   readFileSync,
   writeFileSync,
@@ -5,6 +9,10 @@ const {
 } = require( 'fs' );
 const path = require( 'path' );
 const { spawn } = require( 'child_process' );
+
+const pa11y = require( 'pa11y' );
+const axe = require( 'axe-core' );
+const aChecker = require( "accessibility-checker" );
 
 const root = path.resolve( __dirname, '.' );
 const out = path.resolve( root, 'out' );
@@ -55,3 +63,26 @@ const getAxe = async ( url ) => {
 
   return axed;
 };
+
+// aChecker
+// Perform the accessibility scan using the aChecker.getCompliance API
+// aChecker.getCompliance(testDataFileContent, testLabel).then((results) => {
+//   const report = results.report;
+
+//   // Call the aChecker.assertCompliance API which is used to compare the results with baseline object if we can find one that
+//   // matches the same label which was provided.
+//   const returnCode = aChecker.assertCompliance(report);
+
+//   // In the case that the violationData is not defined then trigger an error right away.
+//   expect(returnCode).toBe(0, "Scanning " + testLabel + " failed.");
+// });
+
+// PA11Y
+// pa11y('https://example.com/').then((results) => {
+//     // Do something with the results
+// });
+
+// MAIN
+const main = async () => {
+  //
+}; main();
