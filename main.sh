@@ -1,0 +1,1 @@
+lighthouse "https://www.nic.in/" --only-categories accessibility --output json --output-path "./out/nic.in.json"

@@ -12,6 +12,7 @@ Powered by
 ## Setup
 ```bash
 $ npm install -g lighthouse # Needs Google Chrome
+$ npm install -g accessibility-checker
 ```
 
 ## Usages
@@ -23,6 +24,9 @@ $ lighthouse https://www.nic.in/ --output json --output-path nic.json
 ### Deque Systems Axe
 
 ### IBM Accessibility Checker
+```bash
+$ accessibility-checker https://www.nic.in/ --output-file nic.json
+```
 
 ### Pa11y
 
