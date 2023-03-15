@@ -2,20 +2,11 @@
 Don't worry there will be a main()
 meanwhile here is some long setup
 */
-
-// imports
 const fs = require( 'fs' );
 const path = require( 'path' );
 const { spawn } = require( 'child_process' );
 
 const Papa = require( 'papaparse' );
-
-const pa11y = require( 'pa11y' );
-const axe = require( 'axe-core' );
-const aChecker = require( "accessibility-checker" );
-
-const root = path.resolve( __dirname, '.' );
-const out = path.resolve( root, 'out' );
 
 // primitives
 const l = ( ln = 0, d, e = null ) => { console.log( ln, e || d ); return d }; // log and return (and error)
@@ -42,17 +33,12 @@ function csv2json ( filepath ) {
     } )
   } )
 }
-const data = csv2json( "./list.csv" ).then( d => {
-  d = d.map( e => {
-    const url = cleanURL( e.href );
-    return {
-      ...e, url,
-      key: url2key( url )
-    }
-  } );
-
-  return l( "csv2json", d )
-} );
+const data = csv2json( "./list.csv" ).then( d => d.map( e => {
+  return {
+    name: e.name,
+    url: cleanURL( e.href ),
+  }
+} ) );
 
 // Cleans a URL
 const cleanURL = ( string ) => {
@@ -75,6 +61,11 @@ const url2key = ( url ) => url
   .replaceAll( "/", '-' );
 
 
+
+// execSync(`cd ${directory} && npm install --unsafe-perm`, {
+//   maxBuffer: 10 * 1000 * 1024, // 10Mo of logs allowed for module with big npm install
+//  });
+
 const async_command = ( command ) => new Promise( ( resolve, reject ) => {
   const child = spawn( command, { shell: true, stdio: 'inherit' } );
   child.on( 'close', ( code ) => code === 0 ? resolve( code ) : reject( code ) );
@@ -93,65 +84,22 @@ const async_command = ( command ) => new Promise( ( resolve, reject ) => {
 const getLighthouse = async ( url ) => {
   const key = url2key( url );
   // const command = `lighthouse "${ url }" --only-categories accessibility --output json --output-path "${ out }/${ key }.json"`;
-  const command = `lighthouse "${ url }" --only-categories accessibility --output json --quiet --chrome-flags="--headless"`; // default for json is stdout
+  const command = `lighthouse "${ url }" --only-categories accessibility --output json --chrome-flags="--headless"
+  --output-path "./out/${ key }.json`; // default for json is stdout
 
-  const exec = await async_command( command );
-  return JSON.parse( l( "getLighthouse", exec ) );
+  const exec = l( await async_command( command ) );
+  return true;
 };
 const processLighthouse = ( raw ) => {
   // TODO: Process the raw data
 };
 
-// AXE
-// https://www.npmjs.com/package/axe-core
-axe.configure( {} );
-const getAxe = async ( url ) => {
-  const axe_raw = axe.run()
-    .then( results => {
-      if ( results.violations.length ) return l( results.violations );
-    } )
-    .catch( err => l( "getAxe-catch", [], err ) );
 
-  return axe_raw;
-};
-const processAxe = ( raw ) => {
-  // TODO: Process the raw data
-};
-
-// aChecker
-// https://www.npmjs.com/package/accessibility-checker
-// Perform the accessibility scan using the aChecker.getCompliance API
-aChecker.getCompliance( testDataFileContent, testLabel ).then( ( results ) => {
-  const report = results.report;
-
-  // Call the aChecker.assertCompliance API which is used to compare the results with baseline object if we can find one that
-  // matches the same label which was provided.
-  const returnCode = aChecker.assertCompliance( report );
-
-  // In the case that the violationData is not defined then trigger an error right away.
-  expect( returnCode ).toBe( 0, "Scanning " + testLabel + " failed." );
-} );
-
-// PA11Y
-// https://github.com/pa11y/pa11y
-const getP11y = async ( url ) => {
-  const pa11y_raw = pa11y( url )
-    .then( results => l( results ) )
-    .catch( err => l( "getP11y-catch", [], err ) );
-  return pa11y_raw
-};
-const processPally = ( raw ) => {
-  // TODO: Process the raw data
-};
 
 // MAIN
 const main = async () => {
   const url = "https://www.nic.in/";
-  // await getAxe( url );
 
-  // const p11y = await getP11y( url );
-  // console.log( p11y );
-
+  const data = await data;
   const lighthouse = await getLighthouse( url );
-  console.log( lighthouse );
 }; main();
