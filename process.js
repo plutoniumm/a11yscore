@@ -3,7 +3,6 @@ Don't worry there will be a main()
 meanwhile here is some long setup
 */
 const fs = require( 'fs' );
-const path = require( 'path' );
 const { spawn } = require( 'child_process' );
 
 const Papa = require( 'papaparse' );
@@ -34,9 +33,10 @@ function csv2json ( filepath ) {
   } )
 }
 const data = csv2json( "./list.csv" ).then( d => d.map( e => {
+  const url = cleanURL( e.href );
   return {
     name: e.name,
-    url: cleanURL( e.href ),
+    url, key: url2key( url )
   }
 } ) );
 
@@ -56,15 +56,12 @@ const cleanURL = ( string ) => {
 // Generates a key from a URL
 const url2key = ( url ) => url
   .replace( /https?:\/\//, '' )
-  .replace( "/\/g", '-' )
   .replaceAll( ".", '' )
-  .replaceAll( "/", '-' );
-
-
-
-// execSync(`cd ${directory} && npm install --unsafe-perm`, {
-//   maxBuffer: 10 * 1000 * 1024, // 10Mo of logs allowed for module with big npm install
-//  });
+  .replaceAll( "/", '-' )
+  .split( ':' )[ 0 ]
+  .split( '?' )[ 0 ]
+  .split( '#' )[ 0 ]
+  .replace( "www", '' );
 
 const async_command = ( command ) => new Promise( ( resolve, reject ) => {
   const child = spawn( command, { shell: true, stdio: 'inherit' } );
@@ -81,25 +78,20 @@ const async_command = ( command ) => new Promise( ( resolve, reject ) => {
 */
 // LIGHTHOUSE
 // https://www.npmjs.com/package/lighthouse
-const getLighthouse = async ( url ) => {
-  const key = url2key( url );
-  // const command = `lighthouse "${ url }" --only-categories accessibility --output json --output-path "${ out }/${ key }.json"`;
-  const command = `lighthouse "${ url }" --only-categories accessibility --output json --chrome-flags="--headless"
-  --output-path "./out/${ key }.json`; // default for json is stdout
+const getLighthouse = async ( url, key ) => {
+  const command = `sh ./lighthouse.sh ${ url } ${ key }`; // default for json is stdout
 
-  const exec = l( await async_command( command ) );
-  return true;
+  return await async_command( command );
 };
 const processLighthouse = ( raw ) => {
   // TODO: Process the raw data
 };
 
 
-
 // MAIN
 const main = async () => {
-  const url = "https://www.nic.in/";
+  const dataset = await data;
 
-  const data = await data;
-  const lighthouse = await getLighthouse( url );
+  const promises = dataset.map( ( { url, key } ) => getLighthouse( url, key ) );
+  const results = await Promise.all( promises );
 }; main();
