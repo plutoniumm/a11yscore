@@ -27,7 +27,7 @@ function csv2json ( filepath ) {
     } )
   } )
 }
-const data = csv2json( "./list.csv" ).then( d => d.map( e => {
+const dataset = csv2json( "./list.csv" ).then( d => d.map( e => {
   const url = cleanURL( e.href );
   return {
     name: e.name,
@@ -52,15 +52,24 @@ const google_process = async ( data ) => {
   }
 };
 
-const grouped = ( { audits, score } ) => {
-  const grouped = audits.group( ( { catagory } ) => catagory );
-  const list = Object.entries( grouped )
+const errors = [];
+const grouper = ( { audits, score } ) => {
+  let list;
+  try {
+    const grouped = audits
+      .filter( e => e.score !== null )
+      .group( ( { catagory } ) => catagory );
+    list = Object.entries( grouped );
+  } catch ( e ) {
+    errors.push( e );
+    return;
+  }
 
   let store = {
     "all-round": ~~( score * 100 )
   };
   list.forEach( ( [ key, value ] ) => {
-    const scores = value.filter( e => e.score !== null ).map( e => e.score );
+    const scores = value.map( e => e.score );
     let average = scores.reduce( ( a, b ) => a + b, 0 ) / scores.length;
 
     average = Number.isNaN( average ) ? null : ~~( average * 100 );
@@ -70,14 +79,41 @@ const grouped = ( { audits, score } ) => {
   return store;
 };
 
-file_list.forEach( async ( file ) => {
-  const fileText = await fs.readFileSync( "./out/" + file, 'utf-8' );
-  const data = JSON.parse( fileText );
+dataset.then( async ( d ) => {
+  let fulljson = d.map( async ( { key: fileName, url, name } ) => {
+    let data;
+    try {
+      const fileText = await fs.readFileSync( `./out/${ fileName }.json`, 'utf-8' );
+      data = JSON.parse( fileText );
+    } catch ( e ) { return console.log( "NO FILE/JSON: ", fileName ); }
 
-  const first_pass = await google_process( data );
-  const grouped_data = grouped( first_pass );
+    if ( data === undefined ) return console.log( "undefined@", fileName );
 
-  console.log( grouped_data );
+    const first_pass = await google_process( data );
+    const grouped_data = grouper( first_pass ) || {};
+
+    grouped_data.name = name;
+    grouped_data.id = fileName;
+    grouped_data.url = url;
+
+    return grouped_data;
+  } );
+  const array = await Promise.all( fulljson );
+
+  // Find all possible keys
+  const keys = new Set();
+  array.forEach( obj => {
+    if ( typeof obj === "object" && obj !== null )
+      Object.keys( obj ).forEach( key => keys.add( key ) )
+  } );
+
+  // Set "N/A" for every object that does not have a key
+  array.forEach( obj => {
+    if ( typeof obj !== "object" || obj === null ) obj = {};
+    keys.forEach( key => {
+      if ( !( Object.hasOwn( obj, key ) ) ) obj[ key ] = "N/A";
+    } )
+  } );
+
+  fs.writeFileSync( "./out.json", JSON.stringify( array ) );
 } );
-
-console.log( data );
