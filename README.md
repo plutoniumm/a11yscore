@@ -6,23 +6,24 @@ A local piece of code to score websites as per their accessibility. 4 tools are 
 Powered by
 |Company| Tool|
 |---|---|
-|Google| Lighthouse|
 |Deque Systems| Axe|
 |IBM| Accessibility Checker|
 |Independent | Pa11y|
 
+We will not use `Google Lighthouse` since under the hood it basically uses `axe-core`.
+
+## Usage
+```bash
+$ node ./run.js
+$ bun ./process.js
+```
+
 ## Setup
 ```bash
-$ npm install -g lighthouse # Needs Google Chrome
 $ npm install -g accessibility-checker
 ```
 
 ## Usages
-### Google Lighthouse
-```bash
-$ lighthouse https://www.nic.in/ --output json --output-path nic.json
-```
-
 ### Deque Systems Axe
 
 ### IBM Accessibility Checker
