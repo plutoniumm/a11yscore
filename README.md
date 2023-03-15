@@ -3,18 +3,18 @@
 <h1>a11yscore</h1>
 </div>
 
-A local piece of code to score websites as per their accessibility. 4 tools are being used and averaged so that we don't miss out on any features. If i see that long terms its getting too redundant, I'll get rid of what I feel is redundant.
+> In active development, will not be ready to use till this message disappears.
 
-> please ignore `/out`, its just a data dump and isn't meant to be human readable.
+A script to score websites as per their accessibility. 3 tools are being used and averaged so that we don't miss out on any features. If i see that long term something is getting too redundant, I'll get rid of it.
 
 Powered by
 |Company| Tool|
 |---|---|
 |Deque Systems| Axe|
-|IBM| Accessibility Checker|
+|IBM| Karma|
 |Independent | Pa11y|
 
-We will not use `Google Lighthouse` since under the hood it basically uses `axe-core`.
+Later we will not use `Google Lighthouse` since under the hood it basically uses `axe-core`, but right now thats basically what we are doing.
 
 ## Usage
 ```bash
@@ -29,6 +29,9 @@ $ npm install -g accessibility-checker
 
 ## Usages
 ### Deque Systems Axe
+```bash
+$
+```
 
 ### IBM Accessibility Checker
 ```bash
@@ -36,19 +39,6 @@ $ accessibility-checker https://www.nic.in/ --output-file nic.json
 ```
 
 ### Pa11y
-
-## Technical
-General Process
-```mermaid
-graph LR
-A[Fetch HTML] --> A2[Convert to InputFormat]
-A2 --> B[Run Checker]
-B --> C[Convert to JSON]
-C --> D[Score]
-
-CryInFreeTime
+```bash
+$
 ```
-
-<!--
-https://www.nic.in/
- -->
