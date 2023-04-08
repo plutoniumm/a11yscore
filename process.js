@@ -115,5 +115,5 @@ dataset.then( async ( d ) => {
     } )
   } );
 
-  fs.writeFileSync( "./out.json", JSON.stringify( array ) );
+  fs.writeFileSync( "./out2.json", JSON.stringify( array ) );
 } );

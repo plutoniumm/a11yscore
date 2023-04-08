@@ -43,9 +43,9 @@ const data = csv2json( "./list.csv" ).then( d => d.map( e => {
 // Cleans a URL
 const cleanURL = ( string ) => {
   // force https
-  string = "https://" + string.replace( /https?:\/\//, '' );
+  // string = "https://" + string.replace( /https?:\/\//, '' );
   // get path only
-  string = string.split( '?' )[ 0 ].split( '#' )[ 0 ];
+  // string = string.split( '?' )[ 0 ].split( '#' )[ 0 ];
   // remove trailing slash
   string = string.replace( /\/$/, '' );
 
@@ -110,6 +110,6 @@ const main = async () => {
   // we will run this then wait then run and wait and so on
   // it is too heavy to run all at once this way we can also catch in case of errors
 
-  const errors2 = await loop( errors, getLighthouse );
+  const errors2 = await loop( dataset, getLighthouse );
   write( './errors2.json', errors, true );
 }; main();
